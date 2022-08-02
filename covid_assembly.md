@@ -23,6 +23,9 @@ wget https://sra-pub-sars-cov2.s3.amazonaws.com/sra-src/SRR11528307/ABS2-LN-R2_c
 
 ### Step 2: Run assembly using spades
 
+Papers assessing multiple covid assemblers:https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8083570/
+https://www.liebertpub.com/doi/10.1089/omi.2022.0042
+
 https://github.com/ablab/spades#sec2
 
 ```
@@ -35,14 +38,36 @@ Run spades:
 ```
 
 ```
-### Step 3: Align assembly to covid reference genome and call variants
+### Step 3: Assess quality of assembly
 
-### Step 4: Use Usher to determine the strain
+https://rrwick.github.io/Bandage/
+
+http://quast.sourceforge.net/quast.html
+https://github.com/ablab/quast
+
+```
+./quast.py test_data/contigs_1.fasta \
+           test_data/contigs_2.fasta \
+        -r test_data/reference.fasta.gz \
+        -g test_data/genes.txt \
+        -1 test_data/reads1.fastq.gz -2 test_data/reads2.fastq.gz \
+        -o quast_test_output
+```
+
+### Step 4: Align assembly to covid reference genome and call variants
+
+- produce vcf file to use in USHER part 5
+-
+
+### Step 5: Use Usher to determine the strain (Lily)
 
 ### Additional ideas for Part 2:
 
 Some other starting ideas for part 2 we could suggest but not put time into setting up (maybe ideas for more advanced computational people):  
 
-- CoronaSpades: HMM based assembler that makes a covid assembly from transcriptome data
+- CoronaSpades: HMM based assembler that makes a covid assembly from transcriptome data - they'd need to find their own data to use, install it, then assess the quality of the assembly. They could compare this assembly to the one we made in part 1 and see which has a higher quality
  https://cab.spbu.ru/software/coronaspades/
  https://www.biorxiv.org/content/10.1101/2020.07.28.224584v2
+
+- covid pangenome: they could make multiple
+- assembly graph: could do something with that, bandage

@@ -9,7 +9,12 @@ cd /public/home/miramastoras/
 mkdir bootcamp
 cd bootcamp
 ```
+`/public/home/miramastoras/bootcamp22`
 
+For testing docker container
+```
+docker run -it -v /public/home/miramastoras/bootcamp22:/public/home/miramastoras/bootcamp22 ubuntu:18.04 /bin/bash
+```
 ### Step 1: Download the covid sequencing data
 
 https://trace.ncbi.nlm.nih.gov/Traces/index.html?view=run_browser&acc=SRR11528307&display=data-access
@@ -36,7 +41,7 @@ cd SPAdes-3.15.5-Linux/bin/
 
 Run spades:
 ```
-
+spades.py -1 /public/home/miramastoras/bootcamp22/data/ABS2-LN-R1_cleaned_paired.fastq.gz -2 /public/home/miramastoras/bootcamp22/data/ABS2-LN-R2_cleaned_paired.fastq.gz -o /public/home/miramastoras/bootcamp22/results/ABS2-LN -t 5
 ```
 ### Step 3: Assess quality of assembly
 
@@ -57,7 +62,7 @@ https://github.com/ablab/quast
 ### Step 4: Align assembly to covid reference genome and call variants
 
 - produce vcf file to use in USHER part 5
--
+-look in IGV?
 
 ### Step 5: Use Usher to determine the strain (Lily)
 
@@ -71,3 +76,4 @@ Some other starting ideas for part 2 we could suggest but not put time into sett
 
 - covid pangenome: they could make multiple
 - assembly graph: could do something with that, bandage
+- Load variant calls and bamfile into IGV

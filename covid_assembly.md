@@ -38,10 +38,33 @@ wget http://cab.spbu.ru/files/release3.15.5/SPAdes-3.15.5-Linux.tar.gz
 tar -xzf SPAdes-3.15.5-Linux.tar.gz
 cd SPAdes-3.15.5-Linux/bin/
 ```
+Files are not actually gzipped, which is required by spades (might be a good error to leave in workflow, they have to figure this out based on error message that spades throws)
+```
+mv ABS2-LN-R1_cleaned_paired.fastq.gz ABS2-LN-R1_cleaned_paired.fastq
+mv ABS2-LN-R2_cleaned_paired.fastq.gz ABS2-LN-R2_cleaned_paired.fastq
+gzip *
+```
 
 Run spades:
 ```
-spades.py -1 /public/home/miramastoras/bootcamp22/data/ABS2-LN-R1_cleaned_paired.fastq.gz -2 /public/home/miramastoras/bootcamp22/data/ABS2-LN-R2_cleaned_paired.fastq.gz -o /public/home/miramastoras/bootcamp22/results/ABS2-LN -t 5
+time ./spades.py -1 /public/home/miramastoras/bootcamp22/data/ABS2-LN-R1_cleaned_paired.fastq.gz -2 /public/home/miramastoras/bootcamp22/data/ABS2-LN-R2_cleaned_paired.fastq.gz -o /public/home/miramastoras/bootcamp22/results/ABS2-LN -t 5 --isolate
+```
+Output:
+```
+======= SPAdes pipeline finished WITH WARNINGS!
+
+=== Error correction and assembling warnings:
+ * 0:00:13.216     5M / 1518M WARN    General                 (kmer_coverage_model.cpp   : 327)   Valley value was estimated improperly, reset to 1
+ * 0:00:16.642    26M / 2282M WARN    General                 (launcher.cpp              : 178)   Your data seems to have high uniform coverage depth. It is strongly recommended to use --isolate option.
+======= Warnings saved to /public/home/miramastoras/bootcamp22/results/ABS2-LN/warnings.log
+
+SPAdes log can be found here: /public/home/miramastoras/bootcamp22/results/ABS2-LN/spades.log
+
+Thank you for using SPAdes!
+
+real    2m11.608s
+user    8m42.988s
+sys     0m32.668s
 ```
 ### Step 3: Assess quality of assembly
 
@@ -50,19 +73,33 @@ https://rrwick.github.io/Bandage/
 http://quast.sourceforge.net/quast.html
 https://github.com/ablab/quast
 
+Download covid reference genome
+https://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/bigZips/
 ```
-./quast.py test_data/contigs_1.fasta \
-           test_data/contigs_2.fasta \
-        -r test_data/reference.fasta.gz \
-        -g test_data/genes.txt \
-        -1 test_data/reads1.fastq.gz -2 test_data/reads2.fastq.gz \
-        -o quast_test_output
+cd /public/home/miramastoras/bootcamp22/data
+wget https://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/bigZips/wuhCor1.fa.gz
+```
+```
+docker run -it -v /public/home/miramastoras/bootcamp22:/public/home/miramastoras/bootcamp22 -v /public/home/miramastoras/bootcamp22/results/quast_output:/public/home/miramastoras/bootcamp22/results/quast_output tpesout/hpp_quast:latest /opt/quast/quast-5.0.2/quast.py /public/home/miramastoras/bootcamp22/results/ABS2-LN/contigs.fasta \
+        -r /public/home/miramastoras/bootcamp22/data/wuhCor1.fa.gz \
+        -1 /public/home/miramastoras/bootcamp22/data/ABS2-LN-R1_cleaned_paired.fastq.gz -2 /public/home/miramastoras/bootcamp22/data/ABS2-LN-R2_cleaned_paired.fastq.gz \
+        -o /public/home/miramastoras/bootcamp22/results/quast_output
 ```
 
 ### Step 4: Align assembly to covid reference genome and call variants
+https://github.com/lh3/minimap2/issues/109
+https://github.com/lh3/minimap2/blob/master/misc/README.md
+```
+./minimap2 -cx asm5 --cs ref.fa query.fa | sort -k6,6 -k8,8n | ./k8 misc/paftools.js call - var.txt
 
+git clone https://github.com/lh3/htsbox
+(cd htsbox && make)
+minimap2 -axasm5 wt_minion.fasta wt_pacbio.fasta | samtool sort - > sorted.bam
+htsbox/htsbox pileup -q5 -S10000 -vcf wt_minion.fasta sorted.bam > diff.vcf
+```
 - produce vcf file to use in USHER part 5
--look in IGV?
+- look in IGV?
+- compare variants called by vcf provided by paper
 
 ### Step 5: Use Usher to determine the strain (Lily)
 
@@ -77,3 +114,4 @@ Some other starting ideas for part 2 we could suggest but not put time into sett
 - covid pangenome: they could make multiple
 - assembly graph: could do something with that, bandage
 - Load variant calls and bamfile into IGV
+- compare different assemblers quality

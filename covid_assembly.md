@@ -2,7 +2,13 @@
 
 https://compeau.cbd.cmu.edu/online-education/sars-cov-2-software-assignments/covid-19-genome-assembly-assignment/
 
-### Step 0: Set up working directory
+## Step 0: Create docker container
+
+```
+
+```
+
+### Step 1: Set up working directory
 
 ```
 cd /public/home/miramastoras/

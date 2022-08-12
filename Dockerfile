@@ -47,16 +47,18 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/local/bin
-RUN git clone https://github.com/lh3/htsbox \
-    cd htsbox \
-    make
+RUN git clone https://github.com/lh3/htsbox
+RUN cd htsbox
+RUN chmod +rwx *
+RUN make
 
 ENV PATH="/usr/local/bin/htsbox/:${PATH}"
 
 WORKDIR /usr/local/bin
-RUN git clone https://github.com/lh3/minimap2 \
-    cd minimap2 \
-    make
+RUN git clone https://github.com/lh3/minimap2
+RUN cd minimap2
+RUN chmod +rwx *
+RUN make
 
 ENV PATH="/usr/local/bin/minimap2/:${PATH}"
 

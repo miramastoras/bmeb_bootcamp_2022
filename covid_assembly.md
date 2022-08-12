@@ -47,7 +47,7 @@ gzip *
 
 Run spades:
 ```
-time ./spades.py -1 /public/home/miramastoras/bootcamp22/data/ABS2-LN-R1_cleaned_paired.fastq.gz -2 /public/home/miramastoras/bootcamp22/data/ABS2-LN-R2_cleaned_paired.fastq.gz -o /public/home/miramastoras/bootcamp22/results/ABS2-LN -t 5 --isolate
+time ./spades.py -1 /public/home/miramastoras/bootcamp22/data/ABS2-LN-R1_cleaned_paired.fastq.gz -2 /public/home/miramastoras/bootcamp22/data/ABS2-LN-R2_cleaned_paired.fastq.gz -o /public/home/miramastoras/bootcamp22/results/ABS2-LN -t 5
 ```
 Output:
 ```
@@ -79,13 +79,17 @@ https://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/bigZips/
 cd /public/home/miramastoras/bootcamp22/data
 wget https://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/bigZips/wuhCor1.fa.gz
 ```
+Run Quast
 ```
-docker run -it -v /public/home/miramastoras/bootcamp22:/public/home/miramastoras/bootcamp22 -v /public/home/miramastoras/bootcamp22/results/quast_output:/public/home/miramastoras/bootcamp22/results/quast_output tpesout/hpp_quast:latest /opt/quast/quast-5.0.2/quast.py /public/home/miramastoras/bootcamp22/results/ABS2-LN/contigs.fasta \
+docker run -it -u `id -u`:`id -g` -v /public:/public -v /public/home/miramastoras/bootcamp22:/public/home/miramastoras/bootcamp22 tpesout/hpp_quast:latest /opt/quast/quast-5.0.2/quast.py /public/home/miramastoras/bootcamp22/results/ABS2-LN/contigs.fasta \
         -r /public/home/miramastoras/bootcamp22/data/wuhCor1.fa.gz \
         -1 /public/home/miramastoras/bootcamp22/data/ABS2-LN-R1_cleaned_paired.fastq.gz -2 /public/home/miramastoras/bootcamp22/data/ABS2-LN-R2_cleaned_paired.fastq.gz \
         -o /public/home/miramastoras/bootcamp22/results/quast_output
 ```
-
+Look at summary results:
+```
+less report.txt
+```
 ### Step 4: Align assembly to covid reference genome and call variants
 https://github.com/lh3/minimap2/issues/109
 https://github.com/lh3/minimap2/blob/master/misc/README.md
@@ -100,6 +104,11 @@ htsbox/htsbox pileup -q5 -S10000 -vcf wt_minion.fasta sorted.bam > diff.vcf
 - produce vcf file to use in USHER part 5
 - look in IGV?
 - compare variants called by vcf provided by paper
+
+Align reads to reference genome and call variants
+```
+
+```
 
 ### Step 5: Use Usher to determine the strain (Lily)
 

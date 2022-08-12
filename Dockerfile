@@ -48,7 +48,7 @@ RUN apt-get update \
 
 WORKDIR /usr/local/bin
 RUN git clone https://github.com/lh3/htsbox
-RUN cd htsbox
+WORKDIR htsbox
 RUN chmod +rwx *
 RUN make
 
@@ -56,7 +56,7 @@ ENV PATH="/usr/local/bin/htsbox/:${PATH}"
 
 WORKDIR /usr/local/bin
 RUN git clone https://github.com/lh3/minimap2
-RUN cd minimap2
+WORKDIR minimap2
 RUN chmod +rwx *
 RUN make
 

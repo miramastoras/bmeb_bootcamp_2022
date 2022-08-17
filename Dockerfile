@@ -74,4 +74,10 @@ RUN wget https://github.com/samtools/samtools/releases/download/1.9/samtools-1.9
     make && \
     ln -s /opt/samtools/samtools-1.9/samtools /usr/local/bin/samtools
 
+# configure paftools.js
+WORKDIR /usr/local/bin/minimap2
+RUN curl -L https://github.com/attractivechaos/k8/releases/download/v0.2.4/k8-0.2.4.tar.bz2 | tar -jxf -
+RUN cp k8-0.2.4/k8-`uname -s` k8
+ENV PATH="${PATH}:/usr/local/bin/minimap2/:/usr/local/bin/minimap2/misc"
+
 WORKDIR /data

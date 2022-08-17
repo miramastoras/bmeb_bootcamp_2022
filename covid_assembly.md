@@ -103,9 +103,25 @@ less report.txt
 https://github.com/lh3/minimap2/issues/109
 https://github.com/lh3/minimap2/blob/master/misc/README.md
 ```
+# Map assembly to covid reference
+docker run -it \
+    -u `id -u`:`id -g` -v /public:/public \
+    -v /public/home/miramastoras/bootcamp22:/public/home/miramastoras/bootcamp22 \
+    miramastoras/bmeb_bootcamp22:latest \
+    minimap2 -axasm5 /public/home/miramastoras/bootcamp22/data/wuhCor1.fa.gz /public/home/miramastoras/bootcamp22/results/ABS2-LN/contigs.fasta -o /public/home/miramastoras/bootcamp22/results/ABS2-LN_wuhCor1_mm2.sam
 
-docker run -it -u `id -u`:`id -g` -v /public:/public miramastoras/bmeb_bootcamp22:latest minimap2 -axasm5 results/ABS2-LN/contigs.fasta data/wuhCor1.fa.gz | samtools sort - > results/ABS2-LN_wuhCor1_mm2.bam
-htsbox/htsbox pileup -q5 -S10000 -vcf results/ABS2-LN/contigs.fasta results/ABS2-LN_wuhCor1_mm2.bam > results/ABS2-LN_wuhCor1_mm2.vcf
+# sort alignment (sam) file & convert to bam
+docker run -it \
+    -u `id -u`:`id -g` -v /public:/public \
+    -v /public/home/miramastoras/bootcamp22:/public/home/miramastoras/bootcamp22 \
+    miramastoras/bmeb_bootcamp22:latest \
+    samtools sort /public/home/miramastoras/bootcamp22/results/ABS2-LN_wuhCor1_mm2.sam -o /public/home/miramastoras/bootcamp22/results/ABS2-LN_wuhCor1_mm2.srt.bam
+d
+docker run -it \
+    -u `id -u`:`id -g` -v /public:/public \
+    -v /public/home/miramastoras/bootcamp22:/public/home/miramastoras/bootcamp22 \
+    miramastoras/bmeb_bootcamp22:latest \
+    htsbox pileup -q5 -S10000 -vcf /public/home/miramastoras/bootcamp22/results/ABS2-LN/contigs.fasta /public/home/miramastoras/bootcamp22/results/ABS2-LN_wuhCor1_mm2.srt.bam > /public/home/miramastoras/bootcamp22/results/ABS2-LN_wuhCor1_mm2.vcf
 ```
 - produce vcf file to use in USHER part 5
 - look in IGV?

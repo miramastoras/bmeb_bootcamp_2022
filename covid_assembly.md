@@ -123,6 +123,32 @@ docker run -it \
     miramastoras/bmeb_bootcamp22:latest \
     htsbox pileup -q5 -S10000 -vcf /public/home/miramastoras/bootcamp22/results/ABS2-LN/contigs.fasta /public/home/miramastoras/bootcamp22/results/ABS2-LN_wuhCor1_mm2.srt.bam > /public/home/miramastoras/bootcamp22/results/ABS2-LN_wuhCor1_mm2.vcf
 ```
+
+```
+docker run -it \
+    -u `id -u`:`id -g` -v /public:/public \
+    -v /public/home/miramastoras/bootcamp22:/public/home/miramastoras/bootcamp22 \
+    miramastoras/bmeb_bootcamp22:latest \
+    minimap2 -cx asm5 -t8 --cs /public/home/miramastoras/bootcamp22/data/wuhCor1.fa /public/home/miramastoras/bootcamp22/results/ABS2-LN/contigs.fasta -o /public/home/miramastoras/bootcamp22/results/ABS2-LN_wuhCor1_mm2.paf
+
+# sort by reference start coordinate
+docker run -it \
+    -u `id -u`:`id -g` -v /public:/public \
+    -v /public/home/miramastoras/bootcamp22:/public/home/miramastoras/bootcamp22 \
+    miramastoras/bmeb_bootcamp22:latest \
+    sort -k6,6 -k8,8n /public/home/miramastoras/bootcamp22/results/ABS2-LN_wuhCor1_mm2.paf > /public/home/miramastoras/bootcamp22/results/ABS2-LN_wuhCor1_mm2.srt.paf  
+s
+docker run -it \
+    -u `id -u`:`id -g` -v /public:/public \
+    -v /public/home/miramastoras/bootcamp22:/public/home/miramastoras/bootcamp22 \
+    miramastoras/bmeb_bootcamp22:latest \
+    paftools.js call -f /public/home/miramastoras/bootcamp22/data/wuhCor1.fa /public/home/miramastoras/bootcamp22/results/ABS2-LN_wuhCor1_mm2.srt.paf > ABS2-LN_wuhCor1.vcf
+```
+docker run -it \
+    -u `id -u`:`id -g` -v /public:/public \
+    -v /public/home/miramastoras/bootcamp22:/public/home/miramastoras/bootcamp22 \
+    miramastoras/bmeb_bootcamp22:latest k8 paftools.js call -f /public/home/miramastoras/bootcamp22/data/wuhCor1.fa /public/home/miramastoras/bootcamp22/results/ABS2-LN_wuhCor1_mm2.srt.paf > ABS2-LN_wuhCor1.vcf
+
 - produce vcf file to use in USHER part 5
 - look in IGV?
 - compare variants called by vcf provided by paper

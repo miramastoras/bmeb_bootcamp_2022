@@ -2,8 +2,11 @@
 
 https://compeau.cbd.cmu.edu/online-education/sars-cov-2-software-assignments/covid-19-genome-assembly-assignment/
 
-## Step 0: Create docker container
+### Step 0: How I made the docker container
 
+This section includes the steps I used to create the docker container used in this project, for those who are curious. Otherwise, skip to step 1
+
+Google "dockerfile <program of interest>" to find othe
 ```
 
 ```
@@ -100,12 +103,9 @@ less report.txt
 https://github.com/lh3/minimap2/issues/109
 https://github.com/lh3/minimap2/blob/master/misc/README.md
 ```
-./minimap2 -cx asm5 --cs ref.fa query.fa | sort -k6,6 -k8,8n | ./k8 misc/paftools.js call - var.txt
 
-git clone https://github.com/lh3/htsbox
-(cd htsbox && make)
-minimap2 -axasm5 wt_minion.fasta wt_pacbio.fasta | samtool sort - > sorted.bam
-htsbox/htsbox pileup -q5 -S10000 -vcf wt_minion.fasta sorted.bam > diff.vcf
+docker run -it -u `id -u`:`id -g` -v /public:/public miramastoras/bmeb_bootcamp22:latest minimap2 -axasm5 results/ABS2-LN/contigs.fasta data/wuhCor1.fa.gz | samtools sort - > results/ABS2-LN_wuhCor1_mm2.bam
+htsbox/htsbox pileup -q5 -S10000 -vcf results/ABS2-LN/contigs.fasta results/ABS2-LN_wuhCor1_mm2.bam > results/ABS2-LN_wuhCor1_mm2.vcf
 ```
 - produce vcf file to use in USHER part 5
 - look in IGV?

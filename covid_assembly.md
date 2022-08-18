@@ -126,7 +126,7 @@ cd "${WORKDIR}"/results/quast_output
 less report.txt
 ```
 
-**Breakout session 1**
+**Discussion Question**
 In your groups, discuss the following metrics:
 - NG50
 - NGA50

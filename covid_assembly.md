@@ -4,6 +4,14 @@ For Part One of our bootcamp project, we took inspiration from this workshop dev
 https://compeau.cbd.cmu.edu/online-education/sars-cov-2-software-assignments/covid-19-genome-assembly-assignment/
 
 Our task is to download illumina sequencing reads containing DNA sequences of a "mystery" covid-19 strain. We will assemble a genome from these reads, evaluate the quality of our assembly, then call variants between our assembly and the covid-19 reference genome (wuhCor1). We will then employ the tool USHER to determine the exact strain of our covid sample, and where it lives on the phylogenetic tree of covid.
+
+#### Key:
+```
+code you need to run
+```
+**Mandatory discussion questions**
+
+> optional challenges and questions if you have time or finish early
 ### Step 0: Set up working directory
 
 Please replace "miramastoras" with your own username

@@ -1,17 +1,18 @@
 ## Bootcamp 2022 Project Part 1: Assembly and strain determination of a SARS-COV2 genome
 
-For Part One of our bootcamp project, we took inspiration from this workshop developed by Phillip Compeau (Writer of your BME 205 textbook, btw). Please read this page for additional background and context!
+For Part One of our bootcamp project, we took inspiration from this workshop developed by Phillip Compeau (Writer of your BME 205 textbook, btw). Please read his page for additional background and context!
 https://compeau.cbd.cmu.edu/online-education/sars-cov-2-software-assignments/covid-19-genome-assembly-assignment/
 
 Our task is to download illumina sequencing reads containing DNA sequences of a "mystery" covid-19 strain. We will assemble a genome from these reads, evaluate the quality of our assembly, then call variants between our assembly and the covid-19 reference genome (wuhCor1). We will then employ the tool USHER to determine the exact strain of our covid sample, and where it lives on the phylogenetic tree of covid.
 
-#### Key:
+Key:
 ```
 code you need to run
 ```
 **Mandatory discussion questions**
 
 > optional challenges and questions if you have time or finish early
+
 ### Step 0: Set up working directory
 
 Please replace "miramastoras" with your own username
@@ -24,7 +25,7 @@ cd bootcamp
 WORKDIR=/public/home/miramastoras/bootcamp22
 cd $WORKDIR
 ```
-
+If you are curious about how i set up the docker container for this workshop, the dockerfile is here: 
 ### Step 1: Download the covid sequencing data and assembly
 
 Location of illumina reads:

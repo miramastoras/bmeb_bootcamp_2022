@@ -25,7 +25,7 @@ cd bootcamp
 WORKDIR=/public/home/miramastoras/bootcamp22
 cd $WORKDIR
 ```
-If you are curious about how i set up the docker container for this workshop, the dockerfile is here: 
+If you are curious about how i set up the docker container for this workshop, the dockerfile is here: https://github.com/miramastoras/bmeb_bootcamp_2022/tree/main/docker
 ### Step 1: Download the covid sequencing data and assembly
 
 Location of illumina reads:

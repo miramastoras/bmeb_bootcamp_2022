@@ -8,6 +8,7 @@ In short, what we are now doing is expanding the scope of our analysis to lookin
 but thousands of such sequences simultaneously. By aligning a large number of viral genomes sequences against each other, 
 it is easy to detect the emergence of new, interesting variants and see how those variants shift over time.
 
+
 ### Step 0: Set up working directory
 ```bash
 cd /public/home/username
@@ -18,12 +19,14 @@ WORKDIR=/public/home/username/bootcamp-pt2
 cd $WORKDIR
 ```
 
+
 ### Step 1: Retrieve viral sequence data from UK Covid patients
 ```bash
+git clone https://github.com/miramastoras/bmeb_bootcamp_2022.git
 mkdir data
+mv bmeb_bootcamp_2022/UK-Genomes.zip ./data
 cd data
-wget https://compeau.cbd.cmu.edu/wp-content/uploads/2022/07/UK-Genomes.zip 
-unzip UK-Genomes.zip
+unzip UK-Genomes
 cd UK-Genomes
 ls
 ```
@@ -42,18 +45,24 @@ Also note that the number of sequences in `2022_03_07.fasta` is less than 100, w
 
 > Question: Can you find out how many sequences there are in `2022_03_07.fasta`?
 
-### Step 2: Use MUSCLE to perform multiple alignment
 
+### Step 2: Use MUSCLE to perform multiple alignment
+We go to this link to download ```MUSCLE```: https://drive5.com/muscle/downloads_v3.htm
 ```bash
-docker run -it \
-    -u `id -u`:`id -g` -v /public:/public \
-    -v "$WORKDIR":"$WORKDIR" \
-    username/bmeb_bootcamp22:latest \
-    muscle -in "$WORKDIR"/data/UK-Genomes/2022_03_07/2022_03_07.fasta \
-    -out "$WORKDIR"/data/UK-Genomes/2022_03_07/2022_03_07_A.fasta
+cd $WORKDIR
+wget https://drive5.com/muscle/downloads3.8.31/muscle3.8.31_i86linux64.tar.gz
+tar -xzvf muscle3.8.31_i86linux64.tar.gz
+rm muscle3.8.31_i86linux64.tar.gz
+mv muscle3.8.31_i86linux64 muscle
 ```
 
-It should take about 2 hours to run. The output should look something like this:
+Running ```MUSCLE``` on our sequences:
+```bash
+muscle -in "$WORKDIR"/data/UK-Genomes/2022_03_07/2022_03_07.fasta \
+    -out "$WORKDIR"/data/UK-Genomes/2022_03_07/2022_03_07_A.muscle.fasta
+```
+
+It should take about 2 hours to run. Here's an example output:
 ```
 MUSCLE v3.8.31 by Robert C. Edgar
 
@@ -72,16 +81,95 @@ Please cite: Edgar, R.C. Nucleic Acids Res 32(5), 1792-97.
 01:53:41  1891 MB(-712%)  Iter   3  100.00%  Refine biparts
 ```
 
-### Step 3: Download the alignment files to your laptop
 
-We need to copy some of the alignment files from the server to our laptop to visualize them with the NCBI MSA viewer.
+### Step 2: Use Prank to perform multiple alignment
+Now let's try performing the multiple alignment using another tool: ```prank```. This one should take a lot faster to run.
+Go to this link to download: http://wasabiapp.org/download/prank/
+```bash
+cd $WORKDIR
+wget http://wasabiapp.org/download/prank/prank.linux64.170427.tgz
+tar -xzvf prank.linux64.170427.tgz
+rm prank.linux64.170427.tgz
+```
+
+Running ```prank``` on our sequences:
+```bash
+prank/bin/prank "$WORKDIR"/data/UK-Genomes/2022_03_07/2022_03_07.fasta
+```
+
+Here's an example output (truncated):
+```
+-----------------
+ PRANK v.170427:
+-----------------
+
+Input for the analysis
+ - aligning sequences in '/home/rennguye/bin/clustalw-2.1/2022_03_07.fasta'
+ - using inferred alignment guide tree
+ - option '+F' is not used; it can be enabled with '+F'
+ - external tools available:
+    MAFFT for initial alignment
+    Exonerate for alignment anchoring
+    BppAncestor for ancestral state reconstruction
+
+Correcting (arbitrarily) for multifurcating nodes.
+Correcting (arbitrarily) for multifurcating nodes.
+
+Generating multiple alignment: iteration 1.
+
+......
+
+Generating multiple alignment: iteration 5.
+
+Alignment score: 26955
+
+
+Writing
+ - alignment to 'output.best.fas'
+
+Analysis done. Total time 631s
+```
+
+Now let's move the output to the same UK-Genomes folder:
+```bash
+mv "$WORKDIR"/output.best.fas "$WORKDIR"/data/UK-Genomes/2022_03_07/2022_03_07_A.prank.fasta
+```
+
+
+### Step 3: Comparing our multiple alignment outputs with MetAl
+
+Let's see how our two multiple alignments compare to one another. The program that we're going to use, ```MetAl```, does this by
+utilizing four metrics to assess the differences between inferred alignments. You can read more about these metrics in the MetAl paper:
+https://academic.oup.com/bioinformatics/article/28/4/495/212883.
+
+Running ```MetAl``` on our two alignments:
+```bash
+/public/home/username/bootcamp-pt2/bmeb_bootcamp_2022/metal "$WORKDIR"/data/UK-Genomes/2022_03_07/2022_03_07_A.muscle.fasta \
+   "$WORKDIR"/data/UK-Genomes/2022_03_07/2022_03_07_A.prank.fasta 
+```
+
+Our output should look something like this:
+```
+367536 / 164542664 = 2.2336820801685817e-3
+```
+This means that the alignments we generated from ```MUSCLE``` and ```prank``` are about 0.223% different from each other, which is
+not a significant number and suggests that we can use either one in our downstream analyses.
+
+
+### Step 4: Download the alignment files to your laptop
+
+Now we will move on to exploring the evolution of viral variants using our multiple alignments. We need to copy some of the alignment files 
+from the server to our laptop to visualize them with the NCBI MSA viewer.
 ```bash
 scp username@servername.uscs.edu:/public/home/username/data/UK-Genomes/2020_11_16/2020_11_16_A.fasta localpathforfile
 ```
 Replace ```localpathforfile``` with the actual path on your local computer where you want the files to be.
 Repeat this command to get files from these dates: ```2020_12_14```, ```2021_11_15```, and ```2022_03_07```.
+Note that we previously created two alignments for ```2022_03_07```, one with ```MUSCLE``` and one with ```prank```. For this exercise,
+let's use the one generated using ```MUSCLE``` (```2022_03_07_A.muscle.fasta```).
 
-### Step 4: View the genome alignments using the NCBI MSA Viewer
+
+### Step 5: View the genome alignments using the NCBI MSA Viewer
 
 Go to this link: https://www.ncbi.nlm.nih.gov/projects/msaviewer/
 Click on the ```Upload``` button, choose ```Data file``` from the sidebar menu, ```Browse``` your local filesystem to select the
@@ -110,7 +198,8 @@ that you see. What regions seem to vary the most? Do they code for any gene or h
 One of the more variable regions corresponds to the spike protein. In the ```2020_11_16``` alignment, this gene occurs starting at column 21,563
 (there is an “ATG” at this position, which is a start codon). 
 
-### Step 5: Profiling individual mutations in the alpha variant
+
+### Step 6: Profiling individual mutations in the alpha variant
 
 In this section, we will give an overview of three mutations that researchers identified in the spike protein gene occurring together in many 
 sampled viruses from November 2020. These mutations, taken together, are some of the mutations that defined the first main variant of SARS-CoV-2, 

@@ -1,6 +1,10 @@
 # Project Overview
 
-    Recently the AlphaFold Protein Structure Database was greatly expanded with  the most recent version of AlphaFold Monomer used to determine the structures of over 200 million protein sequences. This work encompasses virtually all known and publicly available protein sequences. Nevertheless this remarkable tool is relatively straightforward to run yourself and being able to generate the structures of a novel gene or variant could be useful for  many fields of study. In this project we will utilize Google Cloud services to run AlphaFold quickly and for little cost. We will also look at using BigQuery to pull custom sets of structures from the complete AlphaFold dataset. 
+    Recently the AlphaFold Protein Structure Database was greatly expanded with  the most recent version of AlphaFold Monomer used to determine the
+    structures of over 200 million protein sequences. This work encompasses virtually all known and publicly available protein sequences. Nevertheless this
+    remarkable tool is relatively straightforward to run yourself and being able to generate the structures of a novel gene or variant could be useful for
+    many fields of study. In this project we will utilize Google Cloud services to run AlphaFold quickly and for little cost. We will also look at using
+    BigQuery to pull custom sets of structures from the complete AlphaFold dataset. 
 
 # Running AlphaFold on Google Cloud:
 

@@ -15,7 +15,7 @@ code you need to run
 
 ### Step 0: Set up working directory
 
-Please replace "miramastoras" with your own username
+Please replace the directory "miramastoras" with your own username
 ```bash
 cd /public/home/miramastoras/
 mkdir bootcamp
@@ -25,7 +25,13 @@ cd bootcamp
 WORKDIR=/public/home/miramastoras/bootcamp22
 cd $WORKDIR
 ```
-If you are curious about how i set up the docker container for this workshop, the dockerfile is here: https://github.com/miramastoras/bmeb_bootcamp_2022/tree/main/docker
+
+This workshop will use the following docker container
+```
+miramastoras/bmeb_bootcamp22:latest
+```
+If you are curious about how I set it up, the dockerfile is here: https://github.com/miramastoras/bmeb_bootcamp_2022/tree/main/docker
+
 ### Step 1: Download the covid sequencing data and assembly
 
 Location of illumina reads:
@@ -128,31 +134,21 @@ less report.txt
 ```
 
 **Discussion Question**
+
 In your groups, discuss the following metrics:
 - NG50
 - NGA50
-- Number missassemblies
-- BUSCO completeness score
-- genome fraction
+- Number misassemblies
+- Genome Fraction
 - mismatch and indel rate
 
-What do these metrics tell us about the quality and completeness of our assembly? Please take time to research what these metrics mean and discuss in groups
+What do these metrics tell us about the quality and completeness of our assembly? Please take time to research what these metrics mean and discuss in groups. After a few minutes, bootcamp leaders ask someone to share their answers with the whole group.
 
-
-quast contiguity:
-NG50: 50% of reference length, g means ref length and not assembly
-NGA50 count each of these alignable chunks as different
-also report missasemblies. layout phase is where most missasemblies happen
-BUSCO can also be gotten from quast
-
-Genome fraction:  
-
-quast correctness:
-mismatch and indel rate
+Now, run Quast on the covid reference genome. **How does our assembly compare?**
 
 > Bonus Question 1: How does QUAST work? Read its documentation and the paper to try and understand the methods behind the tool.
 
-> Bonus Question 2: https://rrwick.github.io/Bandage/
+> Bonus Question 2: https://rrwick.github.io/Bandage/ Download Bandage and use it to visualize the assembly graph from your spades assembly
 
 
 ### Step 4: Align assembly to covid reference genome and call variants
@@ -212,17 +208,14 @@ cat ABS2-LN_wuhCor1.paftools.vcf
 
 > Optional Challenge: Alternatively, we could also just map our raw illumina reads to the covid reference and call variants that way. Which tools might we use if we did this instead? If you have extra time, try to implement this approach yourself, and look for any differences in the resulting vcf.
 
-> Optional Question: Is minimap+paftools really the best tool for assembly-to-reference alignment & variant calling in viral genomes? Can you find a better one?
+> Optional Question: Is minimap+paftools really the best workflow for assembly-to-reference alignment & variant calling in viral genomes? Can you find a better one?
 
 ### Step 5: Use Usher to determine the strain (Lily)
 
 ### Additional project ideas for Part 2:
 
-Some other starting ideas for part 2 we could suggest but not put time into setting up (maybe ideas for more advanced computational people):  
-
 - CoronaSpades: HMM based assembler that makes a covid assembly from transcriptome data - they'd need to find their own data to use, install it, then assess the quality of the assembly. They could compare this assembly to the one we made in part 1 and see which has a higher quality
  https://cab.spbu.ru/software/coronaspades/
  https://www.biorxiv.org/content/10.1101/2020.07.28.224584v2
-
-- make a covid pangenome
-- compare different assemblers quality
+- Build a covid pangenome
+- Run several different assemblers (research them on your own) and compare their performance

@@ -62,7 +62,7 @@ muscle -in "$WORKDIR"/data/UK-Genomes/2022_03_07/2022_03_07.fasta \
     -out "$WORKDIR"/data/UK-Genomes/2022_03_07/2022_03_07_A.muscle.fasta
 ```
 
-It should take about 2 hours to run. Here's an example output:
+It should take about 2 hours to run. Here's an example stderr message:
 ```
 MUSCLE v3.8.31 by Robert C. Edgar
 
@@ -97,7 +97,7 @@ Running ```prank``` on our sequences:
 prank/bin/prank "$WORKDIR"/data/UK-Genomes/2022_03_07/2022_03_07.fasta
 ```
 
-Here's an example output (truncated):
+Here's an example of the stderr message (truncated):
 ```
 -----------------
  PRANK v.170427:
@@ -144,7 +144,7 @@ https://academic.oup.com/bioinformatics/article/28/4/495/212883.
 
 Running ```MetAl``` on our two alignments:
 ```bash
-/public/home/username/bootcamp-pt2/bmeb_bootcamp_2022/metal "$WORKDIR"/data/UK-Genomes/2022_03_07/2022_03_07_A.muscle.fasta \
+"$WORKDIR"/bmeb_bootcamp_2022/metal "$WORKDIR"/data/UK-Genomes/2022_03_07/2022_03_07_A.muscle.fasta \
    "$WORKDIR"/data/UK-Genomes/2022_03_07/2022_03_07_A.prank.fasta 
 ```
 
@@ -171,9 +171,8 @@ let's use the one generated using ```MUSCLE``` (```2022_03_07_A.muscle.fasta```)
 
 ### Step 5: View the genome alignments using the NCBI MSA Viewer
 
-Go to this link: https://www.ncbi.nlm.nih.gov/projects/msaviewer/
-Click on the ```Upload``` button, choose ```Data file``` from the sidebar menu, ```Browse``` your local filesystem to select the
-alignment file from the earliest sampling date (```2020_11_16_A.fasta```), and click ```Upload```.
+Go to this link: https://www.ncbi.nlm.nih.gov/projects/msaviewer/. Click on the ```Upload``` button, choose ```Data file``` from the sidebar menu, 
+```Browse``` your local filesystem to select the alignment file from the earliest sampling date (```2020_11_16_A.fasta```), and click ```Upload```.
 
 Once the data has finished uploading, click ```Close``` to view the alignment.
 

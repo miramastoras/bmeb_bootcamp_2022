@@ -161,7 +161,7 @@ not a significant number and suggests that we can use either one in our downstre
 Now we will move on to exploring the evolution of viral variants using our multiple alignments. We need to copy some of the alignment files 
 from the server to our laptop to visualize them with the NCBI MSA viewer.
 ```bash
-scp username@servername.uscs.edu:/public/home/username/data/UK-Genomes/2020_11_16/2020_11_16_A.fasta localpathforfile
+scp username@servername.uscs.edu:/public/home/username/data/UK-Genomes/2020_11_16/2020_11_16_A.muscle.fasta localpathforfile
 ```
 Replace ```localpathforfile``` with the actual path on your local computer where you want the files to be.
 Repeat this command to get files from these dates: ```2020_12_14```, ```2021_11_15```, and ```2022_03_07```.

@@ -80,4 +80,22 @@ RUN curl -L https://github.com/attractivechaos/k8/releases/download/v0.2.4/k8-0.
 RUN cp k8-0.2.4/k8-`uname -s` k8
 ENV PATH="${PATH}:/usr/local/bin/minimap2/:/usr/local/bin/minimap2/misc"
 
+# install MUSCLE
+WORKDIR /usr/local/bin
+RUN wget https://drive5.com/muscle/downloads3.8.31/muscle3.8.31_i86linux64.tar.gz --no-check-certificate && \
+  tar -xzvf muscle3.8.31_i86linux64.tar.gz && \
+  rm -r muscle3.8.31_i86linux64.tar.gz && \
+  mkdir muscle3.8 && \
+  mv muscle3.8.31_i86linux64 muscle3.8/muscle
+
+ENV PATH="/usr/local/bin/muscle3.8/:${PATH}"
+
+# install prank
+WORKDIR /usr/local/bin
+RUN wget http://wasabiapp.org/download/prank/prank.linux64.170427.tgz && \
+  tar -xzvf prank.linux64.170427.tgz && \
+  rm -r prank.linux64.170427.tgz
+
+ENV PATH="/usr/local/bin/prank/bin:${PATH}"
+
 WORKDIR /data

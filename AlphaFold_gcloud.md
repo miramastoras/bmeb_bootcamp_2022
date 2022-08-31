@@ -62,7 +62,7 @@
       5. > sudo gpasswd -a $(whoami) docker
 
   5. Enable container registry (must be run outside of VM)
-    1. > gcloud services enable containerregistry.googleapis.com
+      > gcloud services enable containerregistry.googleapis.com
   6. Docker build and push 
       > git clone https://github.com/deepmind/alphafold.git
       > cd alphafold
@@ -82,7 +82,8 @@ Make sure the service account or your account with the Storage Admin role is act
   5. > cd scripts 
   6. > ./download_all_data.sh /path/to/3000gb/diskmnt
   7. > Press ctrl+b then d to detach tmux window 
-  8. to check progress: > tmux attach -t afdb  
+  8. to check progress: 
+     > tmux attach -t afdb  
       https://tmuxcheatsheet.com/
 
 

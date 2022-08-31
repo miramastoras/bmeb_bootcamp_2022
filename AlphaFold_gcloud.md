@@ -169,8 +169,34 @@
    ```
 ### 9. Running AlphaFold 
 
- 
-   
+ 1. Save alphafold.sh from this repository
+ 2. Create GCS bucket
+    ```
+    gsutil mb gs://<PROJECT_ID>-alphafold
+
+    ```
+ 3. Copy FASTA to GCS 
+    ```
+    gsutil cp spike.fasta gs://<PROJECT_ID>-alphafold/input/
+    ```
+ 4. Run with dsub 
+    ```
+    dsub --provider google-cls-v2 \
+    --project <PROJECT_ID> \
+    --zones <ZONE_NAME> \
+    --logging gs://<PROJECT_ID>-alphafold/logs \
+    --image=gcr.io/<PROJECT_ID>/alphafold:latest \
+    --script=alphafold.sh \
+    --input FASTA=gs://<PROJECT_ID>-alphafold/input/all0174.fasta \
+    --mount DB="<IMAGE_URL> 3000" \
+    --output-recursive OUT_PATH=gs://<PROJECT_ID>-alphafold/output \
+    --machine-type n1-standard-8 \
+    --boot-disk-size 100 \ 
+    --accelerator-type nvidia-tesla-k80 \
+    --accelerator-count 1 \
+    --preemptible \
+    ```
+    - Preemptible instances are extremely cost effective with discounts up to 91%, but come with [limitations](https://cloud.google.com/compute/docs/instances/preemptible). 
 
 
 

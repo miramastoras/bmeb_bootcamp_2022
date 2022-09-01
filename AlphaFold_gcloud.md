@@ -27,7 +27,7 @@
   3. ```$ gcloud auth activate-service-account --key-file /path/to/key.json```
   4. Set budget for spending warnings in Budget and Alerts dashboard page
   5. Increase quota for disk space:  
-    1. Search bar \> All Quotas \> Persistent Disk SSD (GB) 
+    1. Search bar \> All Quotas \> Persistent Disk SSD (GB)   
     2. Request increase to 3000 GB 
 ### 4. Create a VM instance for installing the AlphaFold DBs 
   1. Set up environment variable:  

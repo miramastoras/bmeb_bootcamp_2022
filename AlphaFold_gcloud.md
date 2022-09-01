@@ -78,7 +78,7 @@
       ```
   7. Troubleshooting docker push: 
       ```
-      > gcloud auth list   
+      gcloud auth list   
       ```
       ***Make sure the service account or your account with the Storage Admin role is active***
 

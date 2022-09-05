@@ -5,7 +5,7 @@ https://compeau.cbd.cmu.edu/online-education/sars-cov-2-software-assignments/cov
 
 Our task is to download illumina sequencing reads containing DNA sequences of a "mystery" covid-19 strain. We will assemble a genome from these reads, evaluate the quality of our assembly, then call variants between our assembly and the covid-19 reference genome (wuhCor1). We will then employ the tool USHER to determine the exact strain of our covid sample, and where it lives on the phylogenetic tree of covid.
 
-Key:
+### Formatting for workshop:
 ```
 code you need to run
 ```
@@ -17,7 +17,7 @@ code you need to run
 
 This workflow can be run on your local computer, but you need to make sure you have docker installed. If you haven't already, please install it https://docs.docker.com/get-docker/
 
-Please replace the variable `WORKDIR` with the full path to your working directory for this project on your local computer
+Please create a directory on your local computer to hold the analysis in this tutorial. Run the code block below and replace the variable `WORKDIR` with the full path to the directory.
 ```bash
 # set variable WRKDIR to path to your working directory. You will need to do this every time you open a new session
 WORKDIR=/Users/miramastoras/Desktop/bootcamp22
@@ -39,6 +39,7 @@ https://trace.ncbi.nlm.nih.gov/Traces/index.html?view=run_browser&acc=SRR1152830
 Location of assembly:
 https://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/bigZips/
 
+Tip: run each `wget` command in a separate terminal screen to speed this step up
 ```bash
 # make a subdirectory in your working folder to hold data
 mkdir data
@@ -53,13 +54,8 @@ wget https://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/bigZips/wuhCor1.fa.gz
 ```
 ### Step 2: Run assembly using spades
 
-> Optional reading: papers assessing multiple covid assemblers:
-https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8083570/
-https://www.liebertpub.com/doi/10.1089/omi.2022.0042
-
 GitHub page for the spades assembler:
 https://github.com/ablab/spades#sec2
-
 
 If you open one of your sequencing files (`head ABS2-LN-R1_cleaned_paired.fastq.gz`), you might notice that although they carry the extension `.gz`, they are not in fact gzipped. Spades required gzipped fastq files, so this would cause an error.
 
@@ -68,7 +64,8 @@ If you open one of your sequencing files (`head ABS2-LN-R1_cleaned_paired.fastq.
 mv ABS2-LN-R1_cleaned_paired.fastq.gz ABS2-LN-R1_cleaned_paired.fastq
 mv ABS2-LN-R2_cleaned_paired.fastq.gz ABS2-LN-R2_cleaned_paired.fastq
 # actually zip files
-gzip *
+gzip ABS2-LN-R1_cleaned_paired.fastq
+gzip ABS2-LN-R2_cleaned_paired.fastq
 ```
 Lets make another folder to keep our assembly results in
 ```bash
@@ -79,11 +76,16 @@ mkdir results
 Run spades:
 ```bash
 docker run -it \
-    -u `id -u`:`id -g` -v /public:/public \
     -v "${WORKDIR}":"${WORKDIR}" \
     miramastoras/bmeb_bootcamp22:latest \
-    time ./spades.py -1 "${WORKDIR}"/data/ABS2-LN-R1_cleaned_paired.fastq.gz -2 "${WORKDIR}"/data/ABS2-LN-R2_cleaned_paired.fastq.gz -o "${WORKDIR}"/results/ABS2-LN -t 5
+    time spades.py -1 "${WORKDIR}"/data/ABS2-LN-R1_cleaned_paired.fastq.gz -2 "${WORKDIR}"/data/ABS2-LN-R2_cleaned_paired.fastq.gz -o "${WORKDIR}"/results/ABS2-LN -t 5
 ```
+
+> Optional reading: papers assessing multiple covid assemblers:
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8083570/
+https://www.liebertpub.com/doi/10.1089/omi.2022.0042
+
+
 The output should look something like this:
 ```
 ======= SPAdes pipeline finished WITH WARNINGS!
@@ -118,7 +120,6 @@ mkdir quast_output
 Run QUAST on our assembly:
 ```bash
 docker run -it \
-    -u `id -u`:`id -g` -v /public:/public \
     -v "${WORKDIR}":"${WORKDIR}" \
     tpesout/hpp_quast:latest /opt/quast/quast-5.0.2/quast.py /public/home/miramastoras/bootcamp22/results/ABS2-LN/contigs.fasta \
     -r "${WORKDIR}"/data/wuhCor1.fa.gz \
@@ -160,10 +161,9 @@ https://github.com/lh3/minimap2/blob/master/misc/README.md
 Map assembly to covid reference with minimap2
 ```bash
 docker run -it \
-    -u `id -u`:`id -g` -v /public:/public \
-    -v /public/home/miramastoras/bootcamp22:/public/home/miramastoras/bootcamp22 \
+    -v "${WORKDIR}":"${WORKDIR}" \
     miramastoras/bmeb_bootcamp22:latest \
-    minimap2 -cx asm5 -t8 --cs /public/home/miramastoras/bootcamp22/data/wuhCor1.fa /public/home/miramastoras/bootcamp22/results/ABS2-LN/contigs.fasta -o /public/home/miramastoras/bootcamp22/results/ABS2-LN_wuhCor1_mm2.paf
+    minimap2 -cx asm5 -t8 --cs -v "${WORKDIR}"/data/wuhCor1.fa "${WORKDIR}"/results/ABS2-LN/contigs.fasta -o "${WORKDIR}"/results/ABS2-LN_wuhCor1_mm2.paf
 ```
 
 Sort by reference start coordinate
@@ -171,37 +171,34 @@ Sort by reference start coordinate
 **Trick Question: why is this step actually unnecessary for us?**
 ```bash
 docker run -it \
-    -u `id -u`:`id -g` -v /public:/public \
-    -v /public/home/miramastoras/bootcamp22:/public/home/miramastoras/bootcamp22 \
+    -v "${WORKDIR}":"${WORKDIR}" \
     miramastoras/bmeb_bootcamp22:latest \
-    sort -k6,6 -k8,8n /public/home/miramastoras/bootcamp22/results/ABS2-LN_wuhCor1_mm2.paf > /public/home/miramastoras/bootcamp22/results/ABS2-LN_wuhCor1_mm2.srt.paf  
+    sort -k6,6 -k8,8n -v "${WORKDIR}"/results/ABS2-LN_wuhCor1_mm2.paf > -v "${WORKDIR}":"${WORKDIR}"/results/ABS2-LN_wuhCor1_mm2.srt.paf  
 ```
 
 Use paftools stat to examine alignments and variants
 ```bash
 docker run -it \
-    -u `id -u`:`id -g` -v /public:/public \
-    -v /public/home/miramastoras/bootcamp22:/public/home/miramastoras/bootcamp22 \
+    -v "${WORKDIR}":"${WORKDIR}" \
     miramastoras/bmeb_bootcamp22:latest \
-    paftools.js stat /public/home/miramastoras/bootcamp22/results/ABS2-LN_wuhCor1_mm2.srt.paf
+    paftools.js stat "${WORKDIR}"/results/ABS2-LN_wuhCor1_mm2.srt.paf
 ```
 
 Use paftools call to call variants and output in vcf format
 ```bash
 docker run -it \
-    -u `id -u`:`id -g` -v /public:/public \
-    -v /public/home/miramastoras/bootcamp22:/public/home/miramastoras/bootcamp22 \
+    -v "${WORKDIR}":"${WORKDIR}" \
     miramastoras/bmeb_bootcamp22:latest \
-    paftools.js call -L10000 -l5000 -f /public/home/miramastoras/bootcamp22/data/wuhCor1.fa /public/home/miramastoras/bootcamp22/results/ABS2-LN_wuhCor1_mm2.srt.paf > ABS2-LN_wuhCor1.paftools.out
+    paftools.js call -L10000 -l5000 -f "${WORKDIR}"/data/wuhCor1.fa "${WORKDIR}"/results/ABS2-LN_wuhCor1_mm2.srt.paf > "${WORKDIR}"/ABS2-LN_wuhCor1.paftools.out
 ```
 Separate vcf file from paftools stats output
 ```bash
-head -n 11 ABS2-LN_wuhCor1.paftools.out > ABS2-LN_wuhCor1.paftools.vcf
+head -n 11 "${WORKDIR}"/ABS2-LN_wuhCor1.paftools.out >  "${WORKDIR}"/ABS2-LN_wuhCor1.paftools.vcf
 ```
 
 Look inside vcf file:
 ```bash
-cat ABS2-LN_wuhCor1.paftools.vcf
+cat "${WORKDIR}"/ABS2-LN_wuhCor1.paftools.vcf
 ```
 **Discussion question:** Discuss the vcf format in your groups and make sure you understand what all the columns and lines are telling you. Does this match up with what `paftools stats` told us?
 

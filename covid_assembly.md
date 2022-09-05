@@ -13,16 +13,15 @@ code you need to run
 
 > optional challenges and questions if you have time or finish early
 
-### Step 0: Set up working directory
+### Step 0: Set up
 
-Please replace the directory "miramastoras" with your own username
+This workflow can be run on your local computer, but you need to make sure you have docker installed. If you haven't already, please install it https://docs.docker.com/get-docker/
+
+Please replace the variable `WORKDIR` with the full path to your working directory for this project on your local computer
 ```bash
-cd /public/home/miramastoras/
-mkdir bootcamp
-cd bootcamp
-
 # set variable WRKDIR to path to your working directory. You will need to do this every time you open a new session
-WORKDIR=/public/home/miramastoras/bootcamp22
+WORKDIR=/Users/miramastoras/Desktop/bootcamp22
+mkdir $WORKDIR
 cd $WORKDIR
 ```
 

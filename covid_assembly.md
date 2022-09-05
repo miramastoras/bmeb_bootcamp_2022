@@ -81,6 +81,8 @@ docker run -it \
     time spades.py -1 "${WORKDIR}"/data/ABS2-LN-R1_cleaned_paired.fastq.gz -2 "${WORKDIR}"/data/ABS2-LN-R2_cleaned_paired.fastq.gz -o "${WORKDIR}"/results/ABS2-LN -t 5
 ```
 
+(Spades took me about 15 minutes to run on my macbook air)
+
 > Optional reading: papers assessing multiple covid assemblers:
 https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8083570/
 https://www.liebertpub.com/doi/10.1089/omi.2022.0042
@@ -114,11 +116,10 @@ https://github.com/ablab/quast
 Make another subdirectory for quast results
 ```bash
 cd "${WORKDIR}"/results
-mkdir quast_output
+mkdir quast_output_asm
 ```
 
 Run QUAST on our assembly:
-
 ```bash
 docker run -it \
     -v "${WORKDIR}":"${WORKDIR}" \
@@ -126,14 +127,14 @@ docker run -it \
     -r "${WORKDIR}"/data/wuhCor1.fa.gz \
     -1 "${WORKDIR}"/data/ABS2-LN-R1_cleaned_paired.fastq.gz \
     -2 "${WORKDIR}"/data/ABS2-LN-R2_cleaned_paired.fastq.gz \
-    -o "${WORKDIR}"/results/quast_output
+    -o "${WORKDIR}"/results/quast_output_asm
 ```
 
-Quast took me 32 minutes to run on my macbook air. While waiting, you can skip forward to run step 4 simultaneously, then come back here when quast finishes.
+Quast took me 32 minutes to run on my macbook air. While waiting, move ahead to step 4, which can be run simultaneously. Then, come back here to analyze Quast's results
 
 Look at summary statistics:
 ```bash
-cd "${WORKDIR}"/results/quast_output
+cd "${WORKDIR}"/results/quast_output_asm
 less report.txt
 ```
 
@@ -148,11 +149,11 @@ In your groups, discuss the following metrics:
 
 What do these metrics tell us about the quality and completeness of our assembly? Please take time to research what these metrics mean and discuss in groups. After a few minutes, bootcamp leaders ask someone to share their answers with the whole group.
 
-Now, run Quast on the covid reference genome. **How does our assembly compare?**
-
 > Bonus Question 1: How does QUAST work? Read its documentation and the paper to try and understand the methods behind the tool.
 
 > Bonus Question 2: https://rrwick.github.io/Bandage/ Download Bandage and use it to visualize the assembly graph from your spades assembly
+
+> Bonus Question 3: How do the metrics of our assembly compare to the covid reference?
 
 
 ### Step 4: Align assembly to covid reference genome and call variants
@@ -177,7 +178,7 @@ Sort by reference start coordinate
 docker run -it \
     -v "${WORKDIR}":"${WORKDIR}" \
     miramastoras/bmeb_bootcamp22:latest \
-    sort -k6,6 -k8,8n "${WORKDIR}"/results/ABS2-LN_wuhCor1_mm2.paf > "${WORKDIR}":"${WORKDIR}"/results/ABS2-LN_wuhCor1_mm2.srt.paf  
+    sort -k6,6 -k8,8n "${WORKDIR}"/results/ABS2-LN_wuhCor1_mm2.paf > "${WORKDIR}"/results/ABS2-LN_wuhCor1_mm2.srt.paf  
 ```
 
 Use paftools stat to examine alignments and variants
@@ -193,7 +194,7 @@ Use paftools call to call variants and output in vcf format
 docker run -it \
     -v "${WORKDIR}":"${WORKDIR}" \
     miramastoras/bmeb_bootcamp22:latest \
-    paftools.js call -L10000 -l5000 -f "${WORKDIR}"/data/wuhCor1.fa "${WORKDIR}"/results/ABS2-LN_wuhCor1_mm2.srt.paf > "${WORKDIR}"/ABS2-LN_wuhCor1.paftools.out
+    paftools.js call -L10000 -l5000 -f "${WORKDIR}"/data/wuhCor1.fa.gz "${WORKDIR}"/results/ABS2-LN_wuhCor1_mm2.srt.paf > "${WORKDIR}"/ABS2-LN_wuhCor1.paftools.out
 ```
 Separate vcf file from paftools stats output
 ```bash

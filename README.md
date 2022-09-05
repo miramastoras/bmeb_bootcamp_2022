@@ -7,7 +7,7 @@ Our mini-project will have two parts:
 ### Part 1: De-novo assembly of a "mystery" covid genome
 In part 1, you will work individually to assemble a covid genome, call variants against the covid reference, and use USHER to determine what strain of the virus your mystery assembly belongs to. 
 
-Instructions can be found in [covid_assembly.md](https://github.com/miramastoras/bmeb_bootcamp_2022/blob/main/covid_assembly.md),
+Instructions can be found in [covid_assembly.md](https://github.com/miramastoras/bmeb_bootcamp_2022/blob/main/covid_assembly.md)
 
 
 ### Part 2: Exploratory COVID project 

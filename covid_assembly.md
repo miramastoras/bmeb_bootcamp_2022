@@ -121,7 +121,7 @@ Run QUAST on our assembly:
 ```bash
 docker run -it \
     -v "${WORKDIR}":"${WORKDIR}" \
-    tpesout/hpp_quast:latest /opt/quast/quast-5.0.2/quast.py /public/home/miramastoras/bootcamp22/results/ABS2-LN/contigs.fasta \
+    tpesout/hpp_quast:latest /opt/quast/quast-5.0.2/quast.py "${WORKDIR}"/results/ABS2-LN/contigs.fasta \
     -r "${WORKDIR}"/data/wuhCor1.fa.gz \
     -1 "${WORKDIR}"/data/ABS2-LN-R1_cleaned_paired.fastq.gz \
     -2 "${WORKDIR}"/data/ABS2-LN-R2_cleaned_paired.fastq.gz \

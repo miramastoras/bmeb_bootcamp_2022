@@ -17,7 +17,7 @@ code you need to run
 
 This workflow can be run on your local computer, but you need to make sure you have docker installed. If you haven't already, please install it https://docs.docker.com/get-docker/
 
-Please create a directory on your local computer to hold the analysis in this tutorial. Run the code block below and replace the variable `WORKDIR` with the full path to the directory.
+Please create a directory to hold the analysis in this tutorial. Run the code block below and replace the variable `WORKDIR` with the full path to the directory.
 ```bash
 # set variable WRKDIR to path to your working directory. You will need to do this every time you open a new session
 WORKDIR=/Users/miramastoras/Desktop/bootcamp22
@@ -118,6 +118,7 @@ mkdir quast_output
 ```
 
 Run QUAST on our assembly:
+
 ```bash
 docker run -it \
     -v "${WORKDIR}":"${WORKDIR}" \
@@ -127,6 +128,9 @@ docker run -it \
     -2 "${WORKDIR}"/data/ABS2-LN-R2_cleaned_paired.fastq.gz \
     -o "${WORKDIR}"/results/quast_output
 ```
+
+Quast took me 32 minutes to run on my macbook air. While waiting, you can skip forward to run step 4 simultaneously, then come back here when quast finishes.
+
 Look at summary statistics:
 ```bash
 cd "${WORKDIR}"/results/quast_output
@@ -163,7 +167,7 @@ Map assembly to covid reference with minimap2
 docker run -it \
     -v "${WORKDIR}":"${WORKDIR}" \
     miramastoras/bmeb_bootcamp22:latest \
-    minimap2 -cx asm5 -t8 --cs -v "${WORKDIR}"/data/wuhCor1.fa "${WORKDIR}"/results/ABS2-LN/contigs.fasta -o "${WORKDIR}"/results/ABS2-LN_wuhCor1_mm2.paf
+    minimap2 -cx asm5 -t8 --cs "${WORKDIR}"/data/wuhCor1.fa.gz "${WORKDIR}"/results/ABS2-LN/contigs.fasta -o "${WORKDIR}"/results/ABS2-LN_wuhCor1_mm2.paf
 ```
 
 Sort by reference start coordinate
@@ -173,7 +177,7 @@ Sort by reference start coordinate
 docker run -it \
     -v "${WORKDIR}":"${WORKDIR}" \
     miramastoras/bmeb_bootcamp22:latest \
-    sort -k6,6 -k8,8n -v "${WORKDIR}"/results/ABS2-LN_wuhCor1_mm2.paf > -v "${WORKDIR}":"${WORKDIR}"/results/ABS2-LN_wuhCor1_mm2.srt.paf  
+    sort -k6,6 -k8,8n "${WORKDIR}"/results/ABS2-LN_wuhCor1_mm2.paf > "${WORKDIR}":"${WORKDIR}"/results/ABS2-LN_wuhCor1_mm2.srt.paf  
 ```
 
 Use paftools stat to examine alignments and variants

@@ -11,11 +11,11 @@ it is easy to detect the emergence of new, interesting variants and see how thos
 
 ### Step 0: Set up working directory
 ```bash
-cd /public/home/username
+cd /hb/home/username
 mkdir bootcamp-pt2
 cd bootcamp-pt2
 
-WORKDIR=/public/home/username/bootcamp-pt2
+WORKDIR=/hb/home/username/bootcamp-pt2
 cd $WORKDIR
 ```
 
@@ -24,7 +24,7 @@ cd $WORKDIR
 ```bash
 git clone https://github.com/miramastoras/bmeb_bootcamp_2022.git
 mkdir data
-mv bmeb_bootcamp_2022/UK-Genomes.zip ./data
+cp bmeb_bootcamp_2022/UK-Genomes.zip ./data
 cd data
 unzip UK-Genomes
 cd UK-Genomes
@@ -58,11 +58,11 @@ mv muscle3.8.31_i86linux64 muscle
 
 Running ```MUSCLE``` on our sequences:
 ```bash
-muscle -in "$WORKDIR"/data/UK-Genomes/2022_03_07/2022_03_07.fasta \
-    -out "$WORKDIR"/data/UK-Genomes/2022_03_07/2022_03_07_A.muscle.fasta
+./muscle -in data/UK-Genomes/2022_03_07/2022_03_07.fasta \
+    -out data/UK-Genomes/2022_03_07/2022_03_07_A.muscle.fasta
 ```
 
-It should take about 2 hours to run. Here's an example stderr message:
+It should take a bit more than an hour to run. Here's an example stderr message:
 ```
 MUSCLE v3.8.31 by Robert C. Edgar
 
@@ -71,14 +71,14 @@ This software is donated to the public domain.
 Please cite: Edgar, R.C. Nucleic Acids Res 32(5), 1792-97.
 
 2022_03_07 53 seqs, max length 29876, avg  length 29851
-00:00:01    19 MB(-7%)  Iter   1  100.00%  K-mer dist pass 1
-00:00:01    19 MB(-7%)  Iter   1  100.00%  K-mer dist pass 2
-00:27:22  1890 MB(-711%)  Iter   1  100.00%  Align node
-00:27:22  1891 MB(-712%)  Iter   1  100.00%  Root alignment
-00:54:29  1891 MB(-712%)  Iter   2  100.00%  Refine tree
-00:54:30  1891 MB(-712%)  Iter   2  100.00%  Root alignment
-00:54:30  1891 MB(-712%)  Iter   2  100.00%  Root alignment
-01:53:41  1891 MB(-712%)  Iter   3  100.00%  Refine biparts
+00:00:00    20 MB(-4%)  Iter   1  100.00%  K-mer dist pass 1
+00:00:00    20 MB(-4%)  Iter   1  100.00%  K-mer dist pass 2
+00:17:44  1891 MB(-402%)  Iter   1  100.00%  Align node
+00:17:44  1892 MB(-402%)  Iter   1  100.00%  Root alignment
+00:34:00  1892 MB(-402%)  Iter   2  100.00%  Refine tree
+00:34:00  1892 MB(-402%)  Iter   2  100.00%  Root alignment
+00:34:00  1892 MB(-402%)  Iter   2  100.00%  Root alignment
+01:07:36  1892 MB(-402%)  Iter   3  100.00%  Refine biparts
 ```
 
 
@@ -94,7 +94,7 @@ rm prank.linux64.170427.tgz
 
 Running ```prank``` on our sequences:
 ```bash
-prank/bin/prank "$WORKDIR"/data/UK-Genomes/2022_03_07/2022_03_07.fasta
+prank/bin/prank +F -d=data/UK-Genomes/2022_03_07/2022_03_07.fasta
 ```
 
 Here's an example of the stderr message (truncated):
@@ -104,9 +104,8 @@ Here's an example of the stderr message (truncated):
 -----------------
 
 Input for the analysis
- - aligning sequences in '/home/rennguye/bin/clustalw-2.1/2022_03_07.fasta'
+ - aligning sequences in 'data/UK-Genomes/2022_03_07/2022_03_07.fasta'
  - using inferred alignment guide tree
- - option '+F' is not used; it can be enabled with '+F'
  - external tools available:
     MAFFT for initial alignment
     Exonerate for alignment anchoring
@@ -116,23 +115,22 @@ Correcting (arbitrarily) for multifurcating nodes.
 Correcting (arbitrarily) for multifurcating nodes.
 
 Generating multiple alignment: iteration 1.
-
 ......
 
 Generating multiple alignment: iteration 5.
 
-Alignment score: 26955
+Alignment score: 26839
 
 
 Writing
  - alignment to 'output.best.fas'
 
-Analysis done. Total time 631s
+Analysis done. Total time 925s
 ```
 
 Now let's move the output to the same UK-Genomes folder:
 ```bash
-mv "$WORKDIR"/output.best.fas "$WORKDIR"/data/UK-Genomes/2022_03_07/2022_03_07_A.prank.fasta
+mv output.best.fas data/UK-Genomes/2022_03_07/2022_03_07_A.prank.fasta
 ```
 
 
@@ -144,15 +142,15 @@ https://academic.oup.com/bioinformatics/article/28/4/495/212883.
 
 Running ```MetAl``` on our two alignments:
 ```bash
-"$WORKDIR"/bmeb_bootcamp_2022/metal "$WORKDIR"/data/UK-Genomes/2022_03_07/2022_03_07_A.muscle.fasta \
-   "$WORKDIR"/data/UK-Genomes/2022_03_07/2022_03_07_A.prank.fasta 
+bmeb_bootcamp_2022/metal data/UK-Genomes/2022_03_07/2022_03_07_A.muscle.fasta \
+   data/UK-Genomes/2022_03_07/2022_03_07_A.prank.fasta 
 ```
 
 Our output should look something like this:
 ```
-367536 / 164542664 = 2.2336820801685817e-3
+376808 / 164542664 = 2.29003220708764e-3
 ```
-This means that the alignments we generated from ```MUSCLE``` and ```prank``` are about 0.223% different from each other, which is
+This means that the alignments we generated from ```MUSCLE``` and ```prank``` are about 0.229% different from each other, which is
 not a significant number and suggests that we can use either one in our downstream analyses.
 
 
@@ -161,7 +159,7 @@ not a significant number and suggests that we can use either one in our downstre
 Now we will move on to exploring the evolution of viral variants using our multiple alignments. We need to copy some of the alignment files 
 from the server to our laptop to visualize them with the NCBI MSA viewer.
 ```bash
-scp username@servername.uscs.edu:/public/home/username/data/UK-Genomes/2020_11_16/2020_11_16_A.muscle.fasta localpathforfile
+scp username@hb.uscs.edu:/hb/home/username/bootcamp-pt2/data/UK-Genomes/2020_11_16/2020_11_16_A.fasta localpathforfile
 ```
 Replace ```localpathforfile``` with the actual path on your local computer where you want the files to be.
 Repeat this command to get files from these dates: ```2020_12_14```, ```2021_11_15```, and ```2022_03_07```.
@@ -214,7 +212,7 @@ This is a well-studied single-nucleotide mutation first discovered in April 2020
 human cells (the receptor that facilitates the virus’s cell entry).
 
 Because the spike protein begins at position 21563 of both the ```2020_11_16``` alignment and the ```2020_12_14``` alignment, this mutation occurs at 
-position 23063 of the alignments.
+position 23,063 of the alignments.
 
 > Question: At the level of nucleotides, what was the original mutation? How many of the ```2020_11_16``` genomes have the mutation, and how many of 
 the ```2020_12_14``` genomes have the mutation?
@@ -225,7 +223,7 @@ This deletion is present in several coronavirus variants and is therefore referr
 confirmed this mutation does make the coronavirus more infectious, scientists are not entirely sure why. They speculate it may prevent antibodies 
 from binding as tightly.
 
-This mutation removes the 69th and 70th amino acid of the spike protein, which corresponds to positions 21765 through 21770 (inclusively) of 
+This mutation removes the 69th and 70th amino acid of the spike protein, which corresponds to positions 21,765 through 21,770 (inclusively) of 
 both the ```2020_11_16``` and ```2020_12_14``` alignments.
 
 > Question: What is the nucleotide sequence that is deleted? How many of the ```2020_11_16``` genomes have the mutation, and how many of the 
@@ -238,7 +236,7 @@ were inserted in an ancestral sequence. Use the ```2020_11_16``` alignment to ar
 
 This mutation is also present in many coronavirus lineages internationally. Scientists believe that this mutation makes it easier for human enzymes 
 to prepare the spike protein for cell entry.
-The mutation occurs on the 681st amino acid of the spike protein and at nucleotide position 23604 of our alignments.
+The mutation occurs on the 681st amino acid of the spike protein and at nucleotide position 23,604 of our alignments.
 
 > Question: What was the original nucleotide at this position? How many of the ```2020_11_16``` genomes had it? What was the mutation, and how 
 many of the ```2020_12_14``` genomes had acquired the mutation?

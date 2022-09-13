@@ -15,7 +15,7 @@ In part 2, you have the option to research a COVID related question that interes
 
 We've set up some preliminary analyses in three different research areas to get you started. If none of these interest you, and you have your own idea, please feel free to follow that! 
 
-- Option 1: Phylogenetic analysis 
+- [Option 1](https://docs.google.com/presentation/d/1DHumaMpHTdZXdBQIfdLNdR3MCxrvdzUI-qSaAfjIQVo/edit#slide=id.p) : Phylogenetic analysis 
 - [Option 2](https://github.com/miramastoras/bmeb_bootcamp_2022/blob/main/AlphaFold_gcloud.md): Predicting the protein structure of your assembly spike protein with AlphaFold 
 - [Option 3](https://github.com/miramastoras/bmeb_bootcamp_2022/blob/main/pt2-multiple-aln.md): Multiple Alignment of SARS-CoV-2 Genomes for Variant Surveillance 
 

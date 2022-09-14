@@ -40,7 +40,7 @@
   2. Spin up VM instance:
       ``` 
        gcloud compute instances create $INSTANCE \  
-          --zone=us-central1-a \   
+         --zone=us-central1-a \   
          --machine-type=e2-standard-8 \  
          --boot-disk-size=100GB \  
          --create-disk=mode=rw,size=3000,type=projects/$PROJECTID/zones/us-central1-a/diskTypes/pd-balanced,name=alphafold-data,device-name=alphafold-data  

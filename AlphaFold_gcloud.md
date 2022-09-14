@@ -66,7 +66,7 @@
              "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
            $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
        4. sudo apt-get update 
-       5. sudo apt-get install docker-ce docker-ce cli containerd.io
+       5. sudo apt-get install docker-ce docker-ce-cli containerd.io
        6. sudo gpasswd -a $(whoami) docker
   5. Enable container registry (must be run outside of VM)
       ```

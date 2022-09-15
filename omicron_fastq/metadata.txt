@@ -1,0 +1,17 @@
+Run
+	Spots
+	Bases
+	Size
+	GC Content
+	Published
+	Access Type
+
+SRR18447139
+	560.3k
+	131.4M
+	70.1M
+	36%
+	2022-03-24
+	public
+  
+ 

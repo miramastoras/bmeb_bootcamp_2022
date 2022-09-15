@@ -78,7 +78,7 @@
       cd alphafold  
       sudo docker build -f docker/Dockerfile -t alphafold .  
       sudo docker tag alphafold gcr.io/$PROJECTID/alphafold  
-      sudo docker push gcr.io/$PROJECTID/alphafold 
+      docker push gcr.io/$PROJECTID/alphafold 
       ```
   7. Troubleshooting docker push: 
       ```

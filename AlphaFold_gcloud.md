@@ -9,8 +9,11 @@
 # Running AlphaFold on Google Cloud:
 
 ### 0. Spike Protein Fasta 
-   
+  
+  Get the vcf2fasta.py script from this github.
+  Patched from this project.
   https://github.com/santiagosnchez/vcf2fasta
+  
       
 ### 1. Signup with Google Cloud 
 

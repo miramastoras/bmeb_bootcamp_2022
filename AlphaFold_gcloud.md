@@ -9,9 +9,16 @@
 # Running AlphaFold on Google Cloud:
 
 ### 0. Spike Protein Fasta 
+
+  **You should rerun the assembly with these fastqs in order to observe S-gene mutations**
   
-  Get the vcf2fasta.py script from this github.
-  Patched from this project.
+  ```
+  wget https://storage.googleapis.com/nih-sequence-read-archive/sra-src/SRR18447139/DE-DHSS-B1179514_R1.fastq.gz.1
+  wget https://storage.googleapis.com/nih-sequence-read-archive/sra-src/SRR18447139/DE-DHSS-B1179514_R2.fastq.gz.1
+  ```
+  
+  Get the vcf2fasta.py script from this github.  
+  Patched from this project.  
   https://github.com/santiagosnchez/vcf2fasta
   
       

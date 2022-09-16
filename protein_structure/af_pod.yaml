@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gapenunu-afdb-pod
+spec:
+  containers:
+  - name: gapenunu-afdb-container
+    image: localhost:30081/gabrielpenun/alphafold:latest
+    env:
+    - name: DB
+      value: "/mnt/afdb"
+    - name: OUT_PATH
+      value: "/mnt/output"
+    - name: FASTA
+      value: "/mnt/data/input.fa"
+    resources:
+      requests:
+        cpu: 8
+        memory: 16Gi
+        ephemeral-storage: 120Gi
+      limits:
+        cpu: 16
+        memory: 32Gi
+        ephemeral-storage: 150Gi
+    volumeMounts:
+    - mountPath: /mnt/afdb
+      name: afdb
+    - mountPath: /mnt/data
+      name: af-output
+    args: ['--fasta_paths=${FASTA}','--uniref90_database_path=${DB}/uniref90/uniref90.fasta',
+          '--mgnify_database_path=${DB}/mgnify/mgy_clusters_2018_12.fa', '--pdb70_database_path=${DB}/pdb70/pdb70', 
+          '--data_dir=${DB}', '--template_mmcif_dir=${DB}/pdb_mmcif/mmcif_files', 
+          '--obsolete_pdbs_path=${DB}/pdb_mmcif/obsolete.dat', 
+          '--uniclust30_database_path=${DB}/uniclust30/uniclust30_2018_08/uniclust30_2018_08', 
+          '--bfd_database_path=${DB}/bfd/bfd_metaclust_clu_complete_id30_c90_final_seq.sorted_opt', 
+          '--output_dir=${OUT_PATH}', '--benchmark=False', '--max_template_date=2022-05-01',
+          '--use_gpu_relax=True', '--logtostderr'
+         ]
+    #command: ["sh", "-c", "echo 'sleeping' && sleep infinity"]
+  initContainers:
+  - name: init-downloader
+    image: localhost:30081/amazon/aws-cli
+    env:
+    - name: AWS_ACCESS_KEY_ID
+      value: '0CYGQI2EE9TE4YRWVIIW'
+    - name: AWS_SECRET_ACCESS_KEY
+      value: 'swYRfkEuVcHoP4LoB4c6eQgn0GIcAaW7SUBYl4T5'
+    volumeMounts:
+    - mountPath: /mnt/data
+      name: af-output
+    command: ['sh', '-c', aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID ]
+    command: ['sh', '-c', aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY ]
+    command: ['sh', '-c', aws --endpoint https://s3-west.nrp-nautilus.io s3 cp s3://bmebootcamp/prot_fastas/batcoronaspike.fa /mnt/data/input.fa]   
+  restartPolicy: Never
+  volumes:
+    - name: afdb
+      persistentVolumeClaim:
+        claimName: afdb
+    - name: af-output
+      persistentVolumeClaim:
+        claimName: af-output
+  
+    
